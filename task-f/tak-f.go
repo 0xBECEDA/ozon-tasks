@@ -15,8 +15,8 @@ func getNumbersFromFile (slice []byte) []int {
 	for i :=0; i< len(slice);  i++ {
 
 		if slice[i] == 10 || slice[i] == 32 {
-				numsSlice = append(numsSlice, curNum)
-				curNum = 0
+			numsSlice = append(numsSlice, curNum)
+			curNum = 0
 		}else {
 			curN, errr := (strconv.Atoi(string(slice[i])))
 			if errr != nil {
@@ -26,7 +26,6 @@ func getNumbersFromFile (slice []byte) []int {
 			curNum =  int(curN) + (curNum * 10)
 		}
 	}
-
 	//fmt.Println("return getNumbersFromFile ")
 	return numsSlice
 }
@@ -58,6 +57,7 @@ func findSum (array[]int, target int) {
 }
 
 func main() {
+
 	file, err := os.Open("input.txt")
 	if err != nil {
 		fmt.Println(err)
@@ -66,13 +66,13 @@ func main() {
 
 	data:= make([]byte, 100)
 	var buf []byte
+
 	for {
 		n, er := file.Read(data)
 
 		if er == io.EOF {
 			break
 		}else {
-
 			for i:=0; i < n; i++ {
 				buf = append(buf, data[i])
 			}
@@ -92,8 +92,6 @@ func main() {
 			numbers = append(numbers, allNumbersSlice[i])
 		}
 	}
-
 	//fmt.Println("len numbers:", len(numbers))
-
 	findSum(numbers, target)
 }
