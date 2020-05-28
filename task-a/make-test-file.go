@@ -2,9 +2,8 @@ package main
 import (
 	"fmt"
 	"os"
-	"io"
 	"math/rand"
-	"strconv"
+
 )
 
 // количесто элементов в изначальных слайсах (в финальном в 2 раза больше)
@@ -41,13 +40,11 @@ func mix_slice (slice []int) {
 	}
 }
 
-func getNumberFromFile
-
 // создает финальный слайс с рандомными числами
 func make_rand_numbers(slice []int) []int {
 
 	for i := 0; i < amount_elts; i++ {
-		rnd1 := rand.Intn(10000)
+		rnd1 := rand.Intn(100000)
 		slice[i] = rnd1
 	}
 
@@ -62,9 +59,9 @@ func make_rand_numbers(slice []int) []int {
 	fill_the_slice(final_slice, slice, amount_elts, 0, amount_elts * 2)
 
 	// добавляем один уникальный элемент
-	final_slice[amount_elts * 2] = rand.Intn(1000000)
+	final_slice[amount_elts * 2] = rand.Intn(1000000000)
 
-	// fmt.Println("вышел из fill_the_slice\n")
+	fmt.Println(final_slice[amount_elts * 2])
 	// fmt.Println(final_slice[amount_elts * 2], "\n")
 
 	// перемешиваем финальный слайс

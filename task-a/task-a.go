@@ -82,7 +82,6 @@ func (t *Tree) fillBst(dataSlice []int) {
 	var length int = len(dataSlice)
 
 	for i := 0; i < length; i++ {
-
 		t.insert(dataSlice[i])
 	}
 }
@@ -90,11 +89,9 @@ func (t *Tree) fillBst(dataSlice []int) {
 
 
 func getSmallestElt(n *Node) *Node {
-
 	if n.left == nil {
 		return n
 	}
-
 	return getSmallestElt(n.left)
 }
 
@@ -102,7 +99,7 @@ func getSmallestElt(n *Node) *Node {
 func (n *Node) remove (data int) *Node {
 	if data < n.key {
 		if n.left == nil {
-			fmt.Println("remove:  дереве нет такого элемента: %d\n", data)
+			fmt.Println("deleteNode:  дереве нет такого элемента: %d\n", data)
 			return n
 		}else{
 			n.left = n.left.remove(data)
@@ -112,14 +109,13 @@ func (n *Node) remove (data int) *Node {
 
 	if data > n.key {
 		if n.right == nil {
-			fmt.Println("remove:  дереве нет такого элемента: %d\n", data)
+			fmt.Println("deleteNode:  дереве нет такого элемента: %d\n", data)
 			return n
 		}else{
 			n.right = n.right.remove(data)
 			return n
 		}
 	}
-
 	if n.right == nil && n.left == nil {
 		n = nil
 		return nil
@@ -140,23 +136,21 @@ func (n *Node) remove (data int) *Node {
 	return n
 }
 
+
 func (n *Node) getRootKey() int {
 	return n.key
 }
 
 func getNumbersFromFile (slice []byte) []int {
 
-	var j int = 0
 	var	curNum int = 0
 	var numsSlice []int
-	numsSlice = make([]int, len(slice) / 4, len(slice) / 4)
 
 	for i :=0; i< len(slice);  i++ {
 
 		if slice[i] == 10 || slice[i] == 32 {
 			if curNum != 0 {
-				numsSlice[j] = curNum
-				j = j + 1
+				numsSlice = append(numsSlice, curNum)
 				curNum = 0
 			}
 
@@ -175,32 +169,34 @@ func getNumbersFromFile (slice []byte) []int {
 	return numsSlice
 }
 
+
 var t Tree
 
 func main() {
-
-	file, err := os.Open("input.txt")
+	file, err := os.Open("input-201.txt")
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+	data:= make([]byte, 100)
+	var buf []byte
+	for {
+		n, er := file.Read(data)
 
-	data := make([]byte, 10000)
-	n, er := file.Read(data)
+		if er == io.EOF {   // если конец файла
+			break
+		}else {
 
-	if er == io.EOF {   // если конец файла
-		fmt.Println(er)
-		os.Exit(1)
+			for i:=0; i < n; i++ {
+				buf = append(buf, data[i])
+			}
+		}
 	}
 
-	//вот это я хочу убрать!
-	fmt.Println("this is print, which I want remove n:", n)
-
-	var dataSlice []int = getNumbersFromFile(data)
+	var dataSlice []int = getNumbersFromFile(buf)
 
 	t.fillBst(dataSlice)
 	unicN := t.root.getRootKey()
 
-	fmt.Println("Unic number:", unicN)
-
+	fmt.Println(unicN)
 }

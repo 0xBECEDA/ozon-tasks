@@ -4,10 +4,9 @@ import (
 	"fmt"
 	"os"
 	"io"
-	"log"
 	"strconv"
-	"strings"
 )
+
 type Tree struct {
 	root *Node
 }
@@ -63,7 +62,11 @@ func (n *Node) insert(data int) {
 		}
 	}
 	if data == n.key {
-	n.remove(n.key)
+		//fmt.Printf("remove: %d \n", n.key)
+		n.key = data
+		// n.remove(n.key)
+		// printPreOrder(t.root)
+		t.remove(n.key)
 	}
 }
 
@@ -71,7 +74,7 @@ func printPreOrder(n *Node) {
 	if n == nil {
 		return
 	} else {
-		fmt.Printf("%d\n", n.key)
+		fmt.Printf("%d \n", n.key)
 		printPreOrder(n.left)
 		printPreOrder(n.right)
 	}
@@ -83,9 +86,17 @@ func (t *Tree) fillBst(dataSlice []int) {
 
 	for i := 0; i < length; i++ {
 
+		// 	if dataSlice[i] == 0 {
+		// 		break
+		// 	}
+		//fmt.Printf("insert: %d \n", dataSlice[i])
 		t.insert(dataSlice[i])
+		//printPreOrder(t.root)
+
+
 	}
 }
+
 
 
 func getSmallestElt(n *Node) *Node {
@@ -93,7 +104,7 @@ func getSmallestElt(n *Node) *Node {
 	// 	n.key, n.left, n.right)
 
 	if n.left == nil {
-		fmt.Printf("n %d \n", n)
+		//fmt.Printf("n %d \n", n)
 		return n
 	}
 
@@ -102,8 +113,8 @@ func getSmallestElt(n *Node) *Node {
 
 
 func (n *Node) remove (data int) *Node {
-
-	if data < n.key {
+	// fmt.Printf("remove: %d \n", n.key)
+		if data < n.key {
 		if n.left == nil {
 			fmt.Println("deleteNode:  дереве нет такого элемента: %d\n", data)
 			return n
@@ -123,6 +134,7 @@ func (n *Node) remove (data int) *Node {
 		}
 	}
 
+	// fmt.Printf("remove: found! %d \n", n.key)
 	if n.right == nil && n.left == nil {
 		n = nil
 		return nil
@@ -149,33 +161,43 @@ func (n *Node) getRootKey() int {
 	return n.key
 }
 
-func getUnicElt () int {
+// func getUnicElt () int {
 
-}
+// }
 
-func getNumbersAndMakeTree (slice []byte) []int {
+func getNumbersFromFile (slice []byte) []int {
 
-	var stringNumber = ""
-	var convertedNumbersIntoInt []int
 	var j int = 0
+	var	curNum int = 0
+	var numsSlice []int
+	numsSlice = make([]int, len(slice) / 4, len(slice) / 4)
 
-	for i :=0; i++; i< len(slice) {
+	for i :=0; i< len(slice);  i++ {
 
-		if (slice[i]) == io.EOF {
+		if slice[i] == 10 || slice[i] == 32 {
+			// fmt.Println("curNum: ",  curNum)
+			// fmt.Println("j: ",  j)
+			if curNum != 0 {
+				numsSlice[j] = curNum
+				j = j + 1
+				curNum = 0
+			}
+			// fmt.Println("numsSlice[j]: ",  numsSlice[j-1])
+
+		}else if slice[i] ==  0 {
 			break
-		}
 
-		if (string (slice[i])) != "\n" {
-			stringNumber = stringNumber + (string (slice[i]))
+		}else {
+			// fmt.Println("slice[i]): ",  slice[i])
+			curN, errr := (strconv.Atoi(string(slice[i])))
+			if errr != nil {
+				fmt.Println(" errr : ",  errr)
+				os.Exit(1)
+			}
+			curNum =  int(curN) + (curNum * 10)
 		}
-
-		if (string (slice[i])) == "\n" {
-			number := strconv.Atoi(stringNumber)
-			convertedNumbersIntoInt[j] = int(number)
-			stringNumber = ""
-		}
-		return convertedNumbersIntoInt
 	}
+	return numsSlice
 }
 
 func main() {
@@ -185,25 +207,39 @@ func main() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+	data:= make([]byte, 100)
+	var buf []byte
+	for {
+		n, er := file.Read(data)
 
-	data := make([]byte, 100000)
-	n, er := ffile.Read(data)
+		if er == io.EOF {   // если конец файла
+			fmt.Println(er)
+			break
+		}else {
 
-	if er == io.EOF {   // если конец файла
-		fmt.Println(er)
-		os.Exit(1)
+			for i:=0; i < n; i++ {
+				buf = append(buf, data[i])
+			}
+		}
 	}
 
+	var dataSlice []int = getNumbersFromFile(buf)
 
-	// var dataSlice []int = []int{8, 7, 15, 24, 3, 6, 1, 0, 22, 28, 23, 20, 10, 9, 12, 8}
+	// for i := 0; i < len(dataSlice); i++ {
 
-	// t.fillBst(dataSlice)
-	// fmt.Println("before delete\n")
-	// printPreOrder(t.root)
+	// 	if dataSlice[i] == 0 {
+	// 		break
+	// 	}
 
-	// t.remove(25)
-	// fmt.Println("after delete\n")
-	// printPreOrder(t.root)
+	// 	fmt.Println("elt: ", dataSlice[i], "i ", i, "\n", )
+	// }
 
+
+	t.fillBst(dataSlice)
+	fmt.Println("after delete\n")
+	printPreOrder(t.root)
+	unicN := t.root.getRootKey()
+
+	fmt.Println("unicN ", unicN)
 
 }
