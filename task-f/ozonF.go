@@ -59,7 +59,8 @@ func findSum (array[]int, target int) {
 		if indx < arrLen && array[indx] == term && array[indx] + array[i] == target {
 			// печатаем на выход 1 и выходим
 			fmt.Fprintln(file, 1, "\n")
-			// fmt.Println("sum :", term, array[indx], array[i], target)
+			fmt.Println("sum :", term, array[i])
+
 			os.Exit(0)
 		}
 	}
@@ -101,7 +102,7 @@ func main() {
 
 	//fmt.Println("len allNumbers:", len(allNumbersSlice))
 
-	//fmt.Println("target:", target)
+	fmt.Println("target:", target)
 
 	//убираем из массива все числабольше таргета
 	for i:=1; i < len(allNumbersSlice); i++ {
